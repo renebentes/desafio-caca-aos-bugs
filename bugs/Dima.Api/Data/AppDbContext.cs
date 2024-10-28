@@ -33,15 +33,15 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         modelBuilder.Entity<IncomesAndExpenses>()
-            .ToTable("IncomesAndExpenses")
-            .HasNoKey();
+            .HasNoKey()
+            .ToView("vwGetIncomesAndExpenses");
 
         modelBuilder.Entity<IncomesByCategory>()
-            .ToTable("IncomesByCategory")
-            .HasNoKey();
+            .HasNoKey()
+            .ToView("vwGetIncomesByCategory");
 
         modelBuilder.Entity<ExpensesByCategory>()
-            .ToTable("ExpensesByCategory")
-            .HasNoKey();
+            .HasNoKey()
+            .ToView("vwGetExpensesByCategory");
     }
 }

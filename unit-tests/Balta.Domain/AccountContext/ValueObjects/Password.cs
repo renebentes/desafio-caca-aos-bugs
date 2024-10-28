@@ -52,8 +52,8 @@ public record Password : ValueObject
     #region Properties
 
     public string Hash { get; }
-    public DateTime? ExpiresAtUtc { get; }
-    public bool MustChange { get; }
+    public DateTime? ExpiresAtUtc { get; private set; }
+    public bool MustChange { get; private set;  }
 
     #endregion
 
@@ -104,6 +104,26 @@ public record Password : ValueObject
         var keyToCheck = algorithm.GetBytes(keySize);
 
         return keyToCheck.SequenceEqual(key);
+    }
+    
+    public bool IsExpired()
+    {
+        return ExpiresAtUtc.HasValue && ExpiresAtUtc < DateTime.UtcNow;
+    }
+    public void Expire()
+    {
+        ExpiresAtUtc = DateTime.UtcNow.AddDays(-1);
+    }
+    public void MarkAsMustChange()
+    {
+        MustChange = true;
+    }
+    public void Verify()
+    {
+        if (MustChange)
+        {
+            throw new InvalidOperationException("Password must be changed before use.");
+        }
     }
 
     #endregion

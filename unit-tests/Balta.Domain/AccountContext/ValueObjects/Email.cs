@@ -54,6 +54,11 @@ public partial record Email : ValueObject
 
     public void ShouldVerify(string verificationCode) => VerificationCode.ShouldVerify(verificationCode);
 
+    public static Email FromString(string emailAddress, IDateTimeProvider dateTimeProvider)
+    {
+        return ShouldCreate(emailAddress, dateTimeProvider);
+    }
+    
     #endregion
 
     #region Operators

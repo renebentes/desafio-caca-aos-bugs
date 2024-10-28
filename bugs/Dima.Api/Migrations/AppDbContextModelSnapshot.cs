@@ -244,7 +244,9 @@ namespace Dima.Api.Migrations
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
-                    b.ToTable("ExpensesByCategory", (string)null);
+                    b.ToTable((string)null);
+
+                    b.ToView("vwGetExpensesByCategory", (string)null);
                 });
 
             modelBuilder.Entity("Dima.Core.Models.Reports.IncomesAndExpenses", b =>
@@ -265,7 +267,9 @@ namespace Dima.Api.Migrations
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
-                    b.ToTable("IncomesAndExpenses", (string)null);
+                    b.ToTable((string)null);
+
+                    b.ToView("vwGetIncomesAndExpenses", (string)null);
                 });
 
             modelBuilder.Entity("Dima.Core.Models.Reports.IncomesByCategory", b =>
@@ -284,7 +288,9 @@ namespace Dima.Api.Migrations
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
-                    b.ToTable("IncomesByCategory", (string)null);
+                    b.ToTable((string)null);
+
+                    b.ToView("vwGetIncomesByCategory", (string)null);
                 });
 
             modelBuilder.Entity("Dima.Core.Models.Transaction", b =>

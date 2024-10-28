@@ -4,7 +4,6 @@ using Dima.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,15 +11,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dima.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240809132317_v4")]
-    partial class v4
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -247,9 +244,7 @@ namespace Dima.Api.Migrations
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
-                    b.ToTable((string)null);
-
-                    b.ToView("vwGetExpensesByCategory", (string)null);
+                    b.ToTable("ExpensesByCategory", (string)null);
                 });
 
             modelBuilder.Entity("Dima.Core.Models.Reports.IncomesAndExpenses", b =>
@@ -270,9 +265,7 @@ namespace Dima.Api.Migrations
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
-                    b.ToTable((string)null);
-
-                    b.ToView("vwGetIncomesAndExpenses", (string)null);
+                    b.ToTable("IncomesAndExpenses", (string)null);
                 });
 
             modelBuilder.Entity("Dima.Core.Models.Reports.IncomesByCategory", b =>
@@ -291,9 +284,7 @@ namespace Dima.Api.Migrations
                     b.Property<int>("Year")
                         .HasColumnType("int");
 
-                    b.ToTable((string)null);
-
-                    b.ToView("vwGetIncomesByCategory", (string)null);
+                    b.ToTable("IncomesByCategory", (string)null);
                 });
 
             modelBuilder.Entity("Dima.Core.Models.Transaction", b =>

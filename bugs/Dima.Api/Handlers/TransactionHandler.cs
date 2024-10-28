@@ -21,7 +21,7 @@ public class TransactionHandler(AppDbContext context) : ITransactionHandler
         {
             var transaction = new Transaction
             {
-                UserId = "test@balta.io",
+                UserId = request.UserId,
                 CategoryId = request.CategoryId,
                 CreatedAt = DateTime.Now,
                 Amount = request.Amount,
@@ -43,7 +43,23 @@ public class TransactionHandler(AppDbContext context) : ITransactionHandler
 
     public async Task<Response<Transaction?>> UpdateAsync(UpdateTransactionRequest request)
     {
-        throw new NotImplementedException();
+        var transaction = context.Transactions
+            .FirstOrDefault(x => x.Id == request.Id && x.UserId == request.UserId);
+
+        if (transaction is null)
+            return new Response<Transaction?>(null, 404, "Transação não encontrada");
+
+        transaction.Title = request.Title;
+        transaction.PaidOrReceivedAt = request.PaidOrReceivedAt;
+        transaction.Amount = request.Amount;
+        transaction.CategoryId = request.CategoryId;
+        transaction.Type = request.Type;
+        transaction.CreatedAt = request.CreatedAt;
+
+        context.Transactions.Update(transaction);
+        await context.SaveChangesAsync();
+
+        return new Response<Transaction?>(transaction, message: "Transação atualizada com sucesso");
     }
 
     public async Task<Response<Transaction?>> DeleteAsync(DeleteTransactionRequest request)

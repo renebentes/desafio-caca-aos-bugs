@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Dima.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class v4 : Migration
+    public partial class v1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,6 +24,19 @@ namespace Dima.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Category", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExpensesByCategory",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    Expenses = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
                 });
 
             migrationBuilder.CreateTable(
@@ -65,6 +78,33 @@ namespace Dima.Api.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_IdentityUser", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "IncomesAndExpenses",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Month = table.Column<int>(type: "int", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    Incomes = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Expenses = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                });
+
+            migrationBuilder.CreateTable(
+                name: "IncomesByCategory",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    Incomes = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
                 });
 
             migrationBuilder.CreateTable(
@@ -341,6 +381,9 @@ namespace Dima.Api.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ExpensesByCategory");
+
+            migrationBuilder.DropTable(
                 name: "IdentityClaim");
 
             migrationBuilder.DropTable(
@@ -357,6 +400,12 @@ namespace Dima.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "IdentityUserToken");
+
+            migrationBuilder.DropTable(
+                name: "IncomesAndExpenses");
+
+            migrationBuilder.DropTable(
+                name: "IncomesByCategory");
 
             migrationBuilder.DropTable(
                 name: "Premium");

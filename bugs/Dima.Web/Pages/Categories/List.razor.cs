@@ -38,7 +38,7 @@ public partial class ListCategoriesPage : ComponentBase
         {
             var request = new GetAllCategoriesRequest();
             var result = await Handler.GetAllAsync(request);
-            if (result.IsSuccess)
+            if (result is { IsSuccess: true, Data: not null })
                 Categories.AddRange(result.Data);
         }
         catch (Exception ex)

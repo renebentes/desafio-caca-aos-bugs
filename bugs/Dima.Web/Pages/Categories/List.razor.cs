@@ -10,16 +10,15 @@ public partial class ListCategoriesPage : ComponentBase
 {
     #region Properties
 
-    public bool IsBusy { get; set; } = false;
     public List<Category> Categories { get; set; } = [];
+
+    public bool IsBusy { get; set; } = false;
+
     public string SearchTerm { get; set; } = string.Empty;
 
-    #endregion
+    #endregion Properties
 
     #region Services
-
-    [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
 
     [Inject]
     public IDialogService DialogService { get; set; } = null!;
@@ -27,7 +26,10 @@ public partial class ListCategoriesPage : ComponentBase
     [Inject]
     public ICategoryHandler Handler { get; set; } = null!;
 
-    #endregion
+    [Inject]
+    public ISnackbar Snackbar { get; set; } = null!;
+
+    #endregion Services
 
     #region Overrides
 
@@ -51,38 +53,9 @@ public partial class ListCategoriesPage : ComponentBase
         }
     }
 
-    #endregion
+    #endregion Overrides
 
     #region Methods
-
-    public async void OnDeleteButtonClickedAsync(long id, string title)
-    {
-        var result = await DialogService.ShowMessageBox(
-            "ATENÇÃO",
-            $"Ao prosseguir a categoria {title} será excluída. Esta é uma ação irreversível! Deseja continuar?",
-            yesText: "EXCLUIR",
-            cancelText: "Cancelar");
-
-        if (result is true)
-            await OnDeleteAsync(id, title);
-
-        StateHasChanged();
-    }
-
-    public async Task OnDeleteAsync(long id, string title)
-    {
-        try
-        {
-            var request = new DeleteCategoryRequest { Id = id };
-            await Handler.DeleteAsync(request);
-            Categories.RemoveAll(x => x.Id == id);
-            Snackbar.Add($"Categoria {title} excluída", Severity.Success);
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add(ex.Message, Severity.Error);
-        }
-    }
 
     public Func<Category, bool> Filter => category =>
     {
@@ -102,5 +75,34 @@ public partial class ListCategoriesPage : ComponentBase
         return false;
     };
 
-    #endregion
+    public async Task OnDeleteAsync(long id, string title)
+    {
+        try
+        {
+            var request = new DeleteCategoryRequest { Id = id };
+            await Handler.DeleteAsync(request);
+            Categories.RemoveAll(x => x.Id == id);
+            Snackbar.Add($"Categoria {title} excluída", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+    public async void OnDeleteButtonClickedAsync(long id, string title)
+    {
+        var result = await DialogService.ShowMessageBox(
+            "ATENÇÃO",
+            $"Ao prosseguir a categoria {title} será excluída. Esta é uma ação irreversível! Deseja continuar?",
+            yesText: "EXCLUIR",
+            cancelText: "Cancelar");
+
+        if (result is true)
+            await OnDeleteAsync(id, title);
+
+        StateHasChanged();
+    }
+
+    #endregion Methods
 }

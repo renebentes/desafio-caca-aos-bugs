@@ -100,6 +100,8 @@ public class ReportHandler(AppDbContext context) : IReportHandler
                 )
                 .FirstOrDefaultAsync();
 
+            data ??= new FinancialSummary(request.UserId, 0, 0);
+
             return new Response<FinancialSummary?>(data);
         }
         catch

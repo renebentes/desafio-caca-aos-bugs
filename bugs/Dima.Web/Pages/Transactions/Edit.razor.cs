@@ -11,19 +11,18 @@ public partial class EditTransactionPage : ComponentBase
 {
     #region Properties
 
+    public List<Category> Categories { get; set; } = [];
+
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
-    public bool IsBusy { get; set; } = false;
     public UpdateTransactionRequest InputModel { get; set; } = new();
-    public List<Category> Categories { get; set; } = [];
 
-    #endregion
+    public bool IsBusy { get; set; } = false;
+
+    #endregion Properties
 
     #region Services
-
-    [Inject]
-    public ITransactionHandler TransactionHandler { get; set; } = null!;
 
     [Inject]
     public ICategoryHandler CategoryHandler { get; set; } = null!;
@@ -34,7 +33,10 @@ public partial class EditTransactionPage : ComponentBase
     [Inject]
     public ISnackbar Snackbar { get; set; } = null!;
 
-    #endregion
+    [Inject]
+    public ITransactionHandler TransactionHandler { get; set; } = null!;
+
+    #endregion Services
 
     #region Overrides
 
@@ -48,7 +50,7 @@ public partial class EditTransactionPage : ComponentBase
         IsBusy = false;
     }
 
-    #endregion
+    #endregion Overrides
 
     #region Methods
 
@@ -79,9 +81,31 @@ public partial class EditTransactionPage : ComponentBase
         }
     }
 
-    #endregion
+    #endregion Methods
 
     #region Private Methods
+
+    private async Task GetCategoriesAsync()
+    {
+        IsBusy = true;
+        try
+        {
+            var request = new GetAllCategoriesRequest();
+            var result = await CategoryHandler.GetAllAsync(request);
+            if (result.IsSuccess)
+            {
+                Categories = result.Data ?? [];
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
 
     private async Task GetTransactionByIdAsync()
     {
@@ -113,28 +137,5 @@ public partial class EditTransactionPage : ComponentBase
         }
     }
 
-    private async Task GetCategoriesAsync()
-    {
-        IsBusy = true;
-        try
-        {
-            var request = new GetAllCategoriesRequest();
-            var result = await CategoryHandler.GetAllAsync(request);
-            if (result.IsSuccess)
-            {
-                Categories = result.Data ?? [];
-                InputModel.CategoryId = Categories.FirstOrDefault()?.Id ?? 0;
-            }
-        }
-        catch (Exception ex)
-        {
-            Snackbar.Add(ex.Message, Severity.Error);
-        }
-        finally
-        {
-            IsBusy = false;
-        }
-    }
-
-    #endregion
+    #endregion Private Methods
 }

@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @inherits HomePage
 
 <MudGrid Justify="Justify.Center">
@@ -26,7 +26,7 @@
                 }
                 else
                 {
-                    @if (Summary.Total > 0)
+                    @if (Summary.Total >= 0)
                     {
                         <MudText Color="Color.Success" Typo="Typo.h3">
                             @(ShowValues ? Summary.Total.ToString("C") : "R$ ********")

@@ -60,7 +60,13 @@ public partial class RegisterPage : ComponentBase
                 NavigationManager.NavigateTo("/login");
             }
             else
+            {
                 Snackbar.Add(result.Message, Severity.Error);
+                Snackbar.Add(@"Sua senha deve ter pelo menos 6 caracteres,
+                            conter pelo menos um caractere maiúsculo,
+                            um caractere minúsculo,
+                            um número e um caractere especial.", Severity.Error);
+            }
         }
         catch (Exception ex)
         {

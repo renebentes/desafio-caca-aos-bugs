@@ -5,7 +5,6 @@ using Dima.Core.Handlers;
 using Dima.Core.Models;
 using Dima.Core.Requests.Transactions;
 using Dima.Core.Responses;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 
 namespace Dima.Api.Handlers;
@@ -30,8 +29,8 @@ public class TransactionHandler(AppDbContext context) : ITransactionHandler
                 Type = request.Type
             };
 
-            context.Transactions.AddAsync(transaction);
-            context.SaveChangesAsync();
+            await context.Transactions.AddAsync(transaction);
+            await context.SaveChangesAsync();
 
             return new Response<Transaction?>(transaction, 201, "Transação criada com sucesso!");
         }
@@ -39,27 +38,6 @@ public class TransactionHandler(AppDbContext context) : ITransactionHandler
         {
             return new Response<Transaction?>(null, 500, "Não foi possível criar sua transação");
         }
-    }
-
-    public async Task<Response<Transaction?>> UpdateAsync(UpdateTransactionRequest request)
-    {
-        var transaction = context.Transactions
-            .FirstOrDefault(x => x.Id == request.Id && x.UserId == request.UserId);
-
-        if (transaction is null)
-            return new Response<Transaction?>(null, 404, "Transação não encontrada");
-
-        transaction.Title = request.Title;
-        transaction.PaidOrReceivedAt = request.PaidOrReceivedAt;
-        transaction.Amount = request.Amount;
-        transaction.CategoryId = request.CategoryId;
-        transaction.Type = request.Type;
-        transaction.CreatedAt = request.CreatedAt;
-
-        context.Transactions.Update(transaction);
-        await context.SaveChangesAsync();
-
-        return new Response<Transaction?>(transaction, message: "Transação atualizada com sucesso");
     }
 
     public async Task<Response<Transaction?>> DeleteAsync(DeleteTransactionRequest request)
@@ -143,5 +121,26 @@ public class TransactionHandler(AppDbContext context) : ITransactionHandler
         {
             return new PagedResponse<List<Transaction>?>(null, 500, "Não foi possível obter as transações");
         }
+    }
+
+    public async Task<Response<Transaction?>> UpdateAsync(UpdateTransactionRequest request)
+    {
+        var transaction = await context.Transactions
+            .FirstOrDefaultAsync(x => x.Id == request.Id && x.UserId == request.UserId);
+
+        if (transaction is null)
+            return new Response<Transaction?>(null, 404, "Transação não encontrada");
+
+        transaction.Title = request.Title;
+        transaction.PaidOrReceivedAt = request.PaidOrReceivedAt;
+        transaction.Amount = request.Amount;
+        transaction.CategoryId = request.CategoryId;
+        transaction.Type = request.Type;
+        transaction.CreatedAt = request.CreatedAt;
+
+        context.Transactions.Update(transaction);
+        await context.SaveChangesAsync();
+
+        return new Response<Transaction?>(transaction, message: "Transação atualizada com sucesso");
     }
 }

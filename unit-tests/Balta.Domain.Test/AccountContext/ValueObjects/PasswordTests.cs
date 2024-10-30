@@ -1,5 +1,8 @@
 using Balta.Domain.AccountContext.ValueObjects;
+using Balta.Domain.AccountContext.ValueObjects.Exceptions;
+using Balta.Domain.Test.Builders.AccountBuilders;
 using Balta.Domain.Test.Validators;
+using System.Net.Mail;
 
 namespace Balta.Domain.Test.AccountContext.ValueObjects;
 
@@ -21,49 +24,45 @@ public class PasswordTests
     [Trait(nameof(PasswordTests), "")]
     public void ShouldFailIfPasswordIsEmpty()
     {
-        string password = string.Empty;
+        var password = string.Empty;
 
         var exception = Record.Exception(() => Password.ShouldCreate(password));
 
         Assert.NotNull(exception);
     }
 
-    [Fact(DisplayName = nameof(ShouldFailIfPasswordIsWhiteSpace))]
+    [Theory(DisplayName = nameof(ShouldFailIfPasswordIsWhiteSpace))]
+    [InlineData("")]
+    [InlineData("  ")]
+    [InlineData("    ")]
     [Trait(nameof(PasswordTests), "")]
-    public void ShouldFailIfPasswordIsWhiteSpace()
+    public void ShouldFailIfPasswordIsWhiteSpace(string password)
     {
-        string password = "                   ";
-
         var exception = Record.Exception(() => Password.ShouldCreate(password));
 
         Assert.NotNull(exception);
     }
 
-    [Fact(DisplayName = nameof(ShouldFailIfPasswordLenIsLessThanMinimumChars))]
+    [Theory(DisplayName = nameof(ShouldFailIfPasswordLenIsLessThanMinimumChars))]
+    [MemberData(nameof(GetInValidShortPassword), parameters: 5)]
     [Trait(nameof(PasswordTests), "")]
-    public void ShouldFailIfPasswordLenIsLessThanMinimumChars()
+    public void ShouldFailIfPasswordLenIsLessThanMinimumChars(string password)
     {
-        // private const int MinLength = 8;
-        // private const int MaxLength = 48;
-        // private const string Valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        // private const string Special = "!@#$%ˆ&*(){}[];";
-
-        string password = "1234567";
-
         var exception = Record.Exception(() => Password.ShouldCreate(password));
 
         Assert.NotNull(exception);
+        Assert.Equal("Password should have at least 8 characters", exception.Message);
     }
 
-    [Fact(DisplayName = nameof(ShouldFailIfPasswordLenIsGreaterThanMaxChars))]
+    [Theory(DisplayName = nameof(ShouldFailIfPasswordLenIsGreaterThanMaxChars))]
+    [MemberData(nameof(GetInValidLongPassword), parameters: 5)]
     [Trait(nameof(PasswordTests), "")]
-    public void ShouldFailIfPasswordLenIsGreaterThanMaxChars()
+    public void ShouldFailIfPasswordLenIsGreaterThanMaxChars(string password)
     {
-        string password = "408923r89ucjwesoicwdkr82r943t7839@80542348@#!()@0rwjefoiasijasadasdhg";
-
         var exception = Record.Exception(() => Password.ShouldCreate(password));
 
         Assert.NotNull(exception);
+        Assert.Equal("Password should have less than 48 characters", exception.Message);
     }
 
     [Fact(DisplayName = nameof(ShouldHashPassword))]
@@ -82,15 +81,12 @@ public class PasswordTests
     [Trait(nameof(PasswordTests), "")]
     public void ShouldVerifyPasswordHash()
     {
-        // Arrange
         string plainTextPassword = Password.ShouldGenerate();
         var passwordHash = Password.ShouldCreate(plainTextPassword).Hash;
 
-        // Act
         var isMatchCorrect = Password.ShouldMatch(passwordHash, plainTextPassword);
         var isMatchIncorrect = Password.ShouldMatch(passwordHash, "wrongPassword");
 
-        // Assert
         Assert.True(isMatchCorrect);
         Assert.False(isMatchIncorrect);
     }
@@ -108,75 +104,63 @@ public class PasswordTests
         Assert.True(result.IsValid, string.Join(", ", result.Errors.Select(e => e.ErrorMessage)));
     }
 
-    [Fact(DisplayName = nameof(ShouldImplicitConvertToString))]
+    [Theory(DisplayName = nameof(ShouldImplicitConvertToString))]
+    [MemberData(nameof(GetValidPassword), parameters: 5)]
     [Trait(nameof(PasswordTests), "")]
-    public void ShouldImplicitConvertToString()
+    public void ShouldImplicitConvertToString(string plainPassword)
     {
-        // Arrange
-        var plainPassword = "StrongPassword123!";
         var password = Password.ShouldCreate(plainPassword);
 
-        // Act
         string passwordString = password;
 
-        // Assert
         Assert.Equal(password.Hash, passwordString);
     }
 
-    [Fact(DisplayName = nameof(ShouldReturnHashAsStringWhenCallToStringMethod))]
+    [Theory(DisplayName = nameof(ShouldReturnHashAsStringWhenCallToStringMethod))]
+    [MemberData(nameof(GetValidPassword), parameters: 5)]
     [Trait(nameof(PasswordTests), "")]
-    public void ShouldReturnHashAsStringWhenCallToStringMethod()
+    public void ShouldReturnHashAsStringWhenCallToStringMethod(string plainPassword)
     {
-        // Arrange
-        var plainPassword = "StrongPassword123!";
         var password = Password.ShouldCreate(plainPassword);
 
-        // Act
         var passwordString = password.ToString();
         
-        // Assert
         Assert.Equal(password.Hash, passwordString);
-        
     }
 
-    [Fact(DisplayName = nameof(ShouldMarkPasswordAsExpired))]
+    [Theory(DisplayName = nameof(ShouldMarkPasswordAsExpired))]
+    [MemberData(nameof(GetValidPassword), parameters: 5)]
     [Trait(nameof(PasswordTests), "")]
-    public void ShouldMarkPasswordAsExpired()
+    public void ShouldMarkPasswordAsExpired(string plainPassword)
     {
-        // Arrange
-        var plainPassword = "StrongPassword123!";
         var password = Password.ShouldCreate(plainPassword);
 
         password.Expire(); 
 
-        // Assert
         Assert.NotNull(password.ExpiresAtUtc);
         Assert.True(password.IsExpired());
     }
 
-    [Fact(DisplayName = nameof(ShouldFailIfPasswordIsExpired))]
+    [Theory(DisplayName = nameof(ShouldFailIfPasswordIsExpired))]
+    [MemberData(nameof(GetValidPassword), parameters: 5)]
     [Trait(nameof(PasswordTests), "")]
-    public void ShouldFailIfPasswordIsExpired()
+    public void ShouldFailIfPasswordIsExpired(string plainPassword)
     {
-            // Arrange
-            var plainPassword = "StrongPassword123!";
             var password = Password.ShouldCreate(plainPassword);
             
-            // Act
             password.Expire();
             var isExpired = password.IsExpired();
 
-            // Assert
             Assert.NotNull(password.ExpiresAtUtc);
             Assert.True(isExpired);
     }
 
 
-    [Fact(DisplayName = nameof(ShouldMarkPasswordAsMustChange))]
+    [Theory(DisplayName = nameof(ShouldMarkPasswordAsMustChange))]
+    [MemberData(nameof(GetValidPassword), parameters: 5)]
     [Trait(nameof(PasswordTests), "")]
-    public void ShouldMarkPasswordAsMustChange()
+    public void ShouldMarkPasswordAsMustChange(string plainPassword)
     {
-        var plainPassword = "StrongPassword123!";
         var password = Password.ShouldCreate(plainPassword);
 
         password.MarkAsMustChange();
@@ -184,16 +168,41 @@ public class PasswordTests
         Assert.True(password.MustChange);
     }
 
-    [Fact(DisplayName = nameof(ShouldFailIfPasswordIsMarkedAsMustChange))]
+    [Theory(DisplayName = nameof(ShouldFailIfPasswordIsMarkedAsMustChange))]
+    [MemberData(nameof(GetValidPassword), parameters: 5)]
     [Trait(nameof(PasswordTests), "")]
-    public void ShouldFailIfPasswordIsMarkedAsMustChange()
+    public void ShouldFailIfPasswordIsMarkedAsMustChange(string plainPassword)
     {
-        var plainPassword = "StrongPassword123!";
         var password = Password.ShouldCreate(plainPassword);
 
         password.MarkAsMustChange();
 
         var exception = Assert.Throws<InvalidOperationException>(() => password.Verify());
         Assert.Equal("Password must be changed before use.", exception.Message);
+    }
+
+
+
+    public static IEnumerable<object[]> GetValidPassword(int length)
+    {
+        var _fixture = new PasswordBuilder();
+
+        for (var i = 0; i < length; i++)
+            yield return new object[] { _fixture.GetValidPassword() };
+    }
+
+    public static IEnumerable<object[]> GetInValidShortPassword(int length)
+    {
+        var _fixture = new PasswordBuilder();
+
+        for (var i = 0; i < length; i++)
+            yield return new object[] { _fixture.GetInvalidShortPassword() };
+    }
+    public static IEnumerable<object[]> GetInValidLongPassword(int length)
+    {
+        var _fixture = new PasswordBuilder();
+
+        for (var i = 0; i < length; i++)
+            yield return new object[] { _fixture.GetInvalidLongPassword() };
     }
 }

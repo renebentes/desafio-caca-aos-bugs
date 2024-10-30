@@ -6,7 +6,8 @@ namespace Balta.Domain.Test.AccountContext.ValueObjects;
 public class PasswordTests
 {
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfPasswordIsNull))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldFailIfPasswordIsNull()
     {
         string password = null;
@@ -16,7 +17,8 @@ public class PasswordTests
         Assert.NotNull(exception);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfPasswordIsEmpty))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldFailIfPasswordIsEmpty()
     {
         string password = string.Empty;
@@ -26,7 +28,8 @@ public class PasswordTests
         Assert.NotNull(exception);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfPasswordIsWhiteSpace))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldFailIfPasswordIsWhiteSpace()
     {
         string password = "                   ";
@@ -36,7 +39,8 @@ public class PasswordTests
         Assert.NotNull(exception);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfPasswordLenIsLessThanMinimumChars))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldFailIfPasswordLenIsLessThanMinimumChars()
     {
         // private const int MinLength = 8;
@@ -51,7 +55,8 @@ public class PasswordTests
         Assert.NotNull(exception);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfPasswordLenIsGreaterThanMaxChars))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldFailIfPasswordLenIsGreaterThanMaxChars()
     {
         string password = "408923r89ucjwesoicwdkr82r943t7839@80542348@#!()@0rwjefoiasijasadasdhg";
@@ -61,7 +66,8 @@ public class PasswordTests
         Assert.NotNull(exception);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldHashPassword))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldHashPassword()
     {
         string password = Password.ShouldGenerate();
@@ -72,7 +78,8 @@ public class PasswordTests
         Assert.True(isMatch);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldVerifyPasswordHash))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldVerifyPasswordHash()
     {
         // Arrange
@@ -88,7 +95,8 @@ public class PasswordTests
         Assert.False(isMatchIncorrect);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldGenerateStrongPassword))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldGenerateStrongPassword()
     {
         var password = Password.ShouldGenerate();
@@ -100,7 +108,8 @@ public class PasswordTests
         Assert.True(result.IsValid, string.Join(", ", result.Errors.Select(e => e.ErrorMessage)));
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldImplicitConvertToString))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldImplicitConvertToString()
     {
         // Arrange
@@ -114,7 +123,8 @@ public class PasswordTests
         Assert.Equal(password.Hash, passwordString);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldReturnHashAsStringWhenCallToStringMethod))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldReturnHashAsStringWhenCallToStringMethod()
     {
         // Arrange
@@ -129,7 +139,8 @@ public class PasswordTests
         
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldMarkPasswordAsExpired))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldMarkPasswordAsExpired()
     {
         // Arrange
@@ -143,7 +154,8 @@ public class PasswordTests
         Assert.True(password.IsExpired());
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfPasswordIsExpired))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldFailIfPasswordIsExpired()
     {
             // Arrange
@@ -160,7 +172,8 @@ public class PasswordTests
     }
 
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldMarkPasswordAsMustChange))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldMarkPasswordAsMustChange()
     {
         var plainPassword = "StrongPassword123!";
@@ -171,7 +184,8 @@ public class PasswordTests
         Assert.True(password.MustChange);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfPasswordIsMarkedAsMustChange))]
+    [Trait(nameof(PasswordTests), "")]
     public void ShouldFailIfPasswordIsMarkedAsMustChange()
     {
         var plainPassword = "StrongPassword123!";

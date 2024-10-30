@@ -2,6 +2,7 @@ using Balta.Domain.AccountContext.ValueObjects;
 using Balta.Domain.AccountContext.ValueObjects.Exceptions;
 using Balta.Domain.SharedContext.Abstractions;
 using Balta.Domain.SharedContext.Extensions;
+using Balta.Domain.Test.Builders.AccountBuilders;
 using Moq;
 
 namespace Balta.Domain.Test.AccountContext.ValueObjects;
@@ -9,7 +10,6 @@ namespace Balta.Domain.Test.AccountContext.ValueObjects;
 public class EmailTests
 {
     private readonly Mock<IDateTimeProvider> _mockDateTimeProvider;
-
     public EmailTests()
     {
         _mockDateTimeProvider = new Mock<IDateTimeProvider>();
@@ -17,33 +17,27 @@ public class EmailTests
     }
 
 
-    [Fact(DisplayName = nameof(ShouldLowerCaseEmail))]
+    [Theory(DisplayName = nameof(ShouldLowerCaseEmail))]
+    [MemberData(nameof(GetValidEmail), 5)]
     [Trait(nameof(EmailTests), "")]
-    public void ShouldLowerCaseEmail()
+    public void ShouldLowerCaseEmail(string emailAddress)
     {
-        // Arrange
-        var emailAddress = "TEST@EXAMPLE.COM";
+        var email = Email.ShouldCreate(emailAddress.ToUpper(), _mockDateTimeProvider.Object);
 
-        // Act
-        var email = Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object);
-
-        // Assert
         Assert.NotNull(email);
-        Assert.Equal("test@example.com", email.Address);
+        Assert.Equal(emailAddress.ToLower(), email.Address);
         Assert.Equal(email.Address.ToBase64(), email.Hash);
     }
 
-    [Fact(DisplayName = nameof(ShouldTrimEmail))]
+    [Theory(DisplayName = nameof(ShouldTrimEmail))]
+    [InlineData("   test@example.com   ")]
+    [InlineData("test@example.com         ")]
+    [InlineData("      test@example.com")]
     [Trait(nameof(EmailTests), "")]
-    public void ShouldTrimEmail()
+    public void ShouldTrimEmail(string emailAddress)
     {
-        // Arrange
-        var emailAddress = "   test@example.com   ";
-
-        // Act
         var email = Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object);
 
-        // Assert
         Assert.NotNull(email);
         Assert.Equal("test@example.com", email.Address);
     }
@@ -52,105 +46,104 @@ public class EmailTests
     [Trait(nameof(EmailTests), "")]
     public void ShouldFailIfEmailIsNull()
     {
-        // Arrange
         string emailAddress = null;
 
-        // Act
         var exception = Record.Exception(() => Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object));
 
-        // Assert
         Assert.NotNull(exception);
     }
 
-    [Fact(DisplayName = nameof(ShouldFailIfEmailIsEmpty))]
+    [Theory(DisplayName = nameof(ShouldFailIfEmailIsEmpty))]
+    [InlineData("")]
+    [InlineData("  ")]
+    [InlineData("    ")]
     [Trait(nameof(EmailTests), "")]
-    public void ShouldFailIfEmailIsEmpty()
+    public void ShouldFailIfEmailIsEmpty(string emailAddress)
     {
-        var emailAddress = string.Empty;
-
         var exception = Assert.Throws<InvalidEmailException>(() =>
             Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object));
 
         Assert.NotNull(exception);
     }
 
-    [Fact(DisplayName = nameof(ShouldFailIfEmailIsInvalid))]
+    [Theory(DisplayName = nameof(ShouldFailIfEmailIsInvalid))]
+    [InlineData("38e7345teste.com")]
+    [InlineData("example @example.com")]
+    [InlineData("@example.com")]
     [Trait(nameof(EmailTests), "")]
-    public void ShouldFailIfEmailIsInvalid()
+    public void ShouldFailIfEmailIsInvalid(string emailAddress)
     {
-        var emailAddress = "38e7345teste.com";
-
         var exception = Assert.Throws<InvalidEmailException>(() =>
             Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object));
 
         Assert.NotNull(exception);
+        Assert.Equal("E-mail inválido", exception.Message);
     }
 
-    [Fact(DisplayName = nameof(ShouldPassIfEmailIsValid))]
+    [Theory(DisplayName = nameof(ShouldPassIfEmailIsValid))]
+    [MemberData(nameof(GetValidEmail), 5)]
     [Trait(nameof(EmailTests), "")]
-    public void ShouldPassIfEmailIsValid()
+    public void ShouldPassIfEmailIsValid(string emailAddress)
     {
-        // Arrange
-        var emailAddress = "teste348@gmail.com";
-
-        // Act
         var email = Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object);
 
-        // Assert
         Assert.NotNull(email);
-        Assert.Equal(email.Address, emailAddress.ToLower());
+        Assert.Equal(emailAddress.ToLower(), email.Address);
     }
 
 
-    [Fact(DisplayName = nameof(ShouldHashEmailAddress))]
+    [Theory(DisplayName = nameof(ShouldHashEmailAddress))]
+    [MemberData(nameof(GetValidEmail), 5)]
     [Trait(nameof(EmailTests), "")]
-    public void ShouldHashEmailAddress()
+    public void ShouldHashEmailAddress(string emailAddress)
     {
-        var emailAddress = "teste123@gmail.com";
-
         var email = Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object);
 
-        var expectedHash = emailAddress.ToBase64();
+        var expectedHash = emailAddress.ToLower().ToBase64();
 
         Assert.Equal(expectedHash, email.Hash);
     }
 
-    [Fact(DisplayName = nameof(ShouldExplicitConvertFromString))]
+    [Theory(DisplayName = nameof(ShouldExplicitConvertFromString))]
+    [MemberData(nameof(GetValidEmail), 5)]
     [Trait(nameof(EmailTests), "")]
-    public void ShouldExplicitConvertFromString()
+    public void ShouldExplicitConvertFromString(string emailAddress)
     {
-        var emailAddress = "teste123@gmail.com";
-
         var email = Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object);
 
         var convertString = email.ToString();
 
-        Assert.Equal(emailAddress, convertString);
+        Assert.Equal(emailAddress.ToLower(), convertString);
     }
 
-    [Fact(DisplayName = nameof(ShouldExplicitConvertToString))]
+    [Theory(DisplayName = nameof(ShouldExplicitConvertToString))]
+    [MemberData(nameof(GetValidEmail), 5)]
     [Trait(nameof(EmailTests), "")]
-    public void ShouldExplicitConvertToString()
+    public void ShouldExplicitConvertToString(string emailAddress)
     {
-        var emailAddress = "teste123@gmail.com";
-
         var emailFromString = Email.FromString(emailAddress, _mockDateTimeProvider.Object);
 
         Assert.Equal(emailAddress.ToLower(), emailFromString.Address);
     }
 
-    [Fact(DisplayName = nameof(ShouldReturnEmailWhenCallToStringMethod))]
+    [Theory(DisplayName = nameof(ShouldReturnEmailWhenCallToStringMethod))]
+    [MemberData(nameof(GetValidEmail), 5)]
     [Trait(nameof(EmailTests), "")]
-    public void ShouldReturnEmailWhenCallToStringMethod()
+    public void ShouldReturnEmailWhenCallToStringMethod(string emailAddress)
     {
-        // Arrange
-        var emailAddress = "teste123@gmail.com";
         var email = Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object);
 
-        // Act
         var result = email.ToString();
 
-        // Assert
         Assert.Equal(emailAddress.ToLower(), result);
+    }
+
+
+    public static IEnumerable<object[]> GetValidEmail(int length)
+    {
+        var _fixture = new EmailBuilder();
+
+        for (var i = 0; i < length; i++)
+            yield return new object[] { _fixture.GetValidEmail() };
     }
 }

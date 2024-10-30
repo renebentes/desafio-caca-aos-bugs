@@ -95,6 +95,20 @@ dotnet run --project Dima.Web
 
 Por fim, acesse o site no endereço http://localhost:5028 no seu navegador preferido. Se desejar, no endereço http://localhost:5164/swagger está disposta a documentação da API.
 
+### Unit Tests
+
+- Volte a raiz do repositório clonado anteriormente e acesse a pasta da solução:
+
+```bash
+cd unit-tests
+```
+
+- Para rodar os teste, execute:
+
+```bash
+dotnet test Balta.sln
+```
+
 # 💜 Participe
 
 Quer participar dos próximos desafios? Junte-se a [maior comunidade .NET do Brasil 🇧🇷 💜](https://balta.io/discord)

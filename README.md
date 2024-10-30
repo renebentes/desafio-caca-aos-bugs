@@ -16,7 +16,7 @@ Rodolfo de Jesus Silva - [lrodolfol](https://github.com/lrodolfol)
 
 ### 👻 Caçadores de Bugs
 
-- [NOME e GITHUB]
+- Fabricio Carvalho - [FabricioCarvalho348](https://github.com/FabricioCarvalho348)
 - Rene Bentes Pinto - [renebentes](https://github.com/renebentes)
 - Rodolfo de Jesus Silva - [lrodolfol](https://github.com/lrodolfol)
 

@@ -23,7 +23,7 @@ public class EmailTests
     {
         // Arrange
         var emailAddress = "TEST@EXAMPLE.COM";
-        
+
         // Act
         var email = Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object);
 
@@ -67,7 +67,7 @@ public class EmailTests
     public void ShouldFailIfEmailIsEmpty()
     {
         var emailAddress = string.Empty;
-        
+
         var exception = Assert.Throws<InvalidEmailException>(() =>
             Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object));
 
@@ -79,7 +79,7 @@ public class EmailTests
     public void ShouldFailIfEmailIsInvalid()
     {
         var emailAddress = "38e7345teste.com";
-        
+
         var exception = Assert.Throws<InvalidEmailException>(() =>
             Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object));
 
@@ -89,14 +89,14 @@ public class EmailTests
     [Fact(DisplayName = nameof(ShouldPassIfEmailIsValid))]
     [Trait(nameof(EmailTests), "")]
     public void ShouldPassIfEmailIsValid()
-    { 
+    {
         // Arrange
         var emailAddress = "teste348@gmail.com";
-        
+
         // Act
         var email = Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object);
-    
-        var verificationCode = email.VerificationCode.ToString(); 
+        email.VerificationCode.SetVerifiedAtUtc();
+        var verificationCode = email.VerificationCode.ToString();
 
         email.ShouldVerify(verificationCode);
 
@@ -111,11 +111,11 @@ public class EmailTests
     public void ShouldHashEmailAddress()
     {
         var emailAddress = "teste123@gmail.com";
-        
+
         var email = Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object);
 
         var expectedHash = emailAddress.ToBase64();
-        
+
         Assert.Equal(expectedHash, email.Hash);
     }
 
@@ -124,7 +124,7 @@ public class EmailTests
     public void ShouldExplicitConvertFromString()
     {
         var emailAddress = "teste123@gmail.com";
-        
+
         var email = Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object);
 
         var convertString = email.ToString();
@@ -137,9 +137,9 @@ public class EmailTests
     public void ShouldExplicitConvertToString()
     {
         var emailAddress = "teste123@gmail.com";
-    
+
         var emailFromString = Email.FromString(emailAddress, _mockDateTimeProvider.Object);
-    
+
         Assert.Equal(emailAddress.ToLower(), emailFromString.Address);
     }
 
@@ -155,6 +155,6 @@ public class EmailTests
         var result = email.ToString();
 
         // Assert
-        Assert.Equal(emailAddress.ToLower(), result); 
+        Assert.Equal(emailAddress.ToLower(), result);
     }
 }

@@ -36,8 +36,7 @@ public class VerificationCode
     public DateTime? ExpiresAtUtc { get; private set; }
     public DateTime? VerifiedAtUtc { get; private set; }
 
-    public bool IsActive => VerifiedAtUtc != null && ExpiresAtUtc.HasValue && ExpiresAtUtc > DateTime.UtcNow &&
-                            ExpiresAtUtc == null;
+    public bool IsActive => VerifiedAtUtc != null && ExpiresAtUtc.HasValue && ExpiresAtUtc > DateTime.UtcNow;
 
     #endregion
 
@@ -51,6 +50,8 @@ public class VerificationCode
             throw new InvalidVerificationCodeException();
         if (code.Length != MinLength)
             throw new InvalidVerificationCodeException();
+        if (string.Compare(code, Code, StringComparison.OrdinalIgnoreCase) != 0)
+            throw new InvalidVerificationCodeException();
         if (!IsActive)
             throw new InvalidVerificationCodeException();
         if (Code != code)
@@ -58,6 +59,8 @@ public class VerificationCode
         VerifiedAtUtc = DateTime.UtcNow;
         ExpiresAtUtc = null;
     }
+
+    public void SetVerifiedAtUtc() => VerifiedAtUtc = DateTime.UtcNow;
 
     #endregion
 

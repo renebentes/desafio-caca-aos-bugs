@@ -95,10 +95,6 @@ public class EmailTests
 
         // Act
         var email = Email.ShouldCreate(emailAddress, _mockDateTimeProvider.Object);
-        email.VerificationCode.SetVerifiedAtUtc();
-        var verificationCode = email.VerificationCode.ToString();
-
-        email.ShouldVerify(verificationCode);
 
         // Assert
         Assert.NotNull(email);

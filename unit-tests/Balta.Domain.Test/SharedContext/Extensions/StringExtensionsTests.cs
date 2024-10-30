@@ -5,7 +5,8 @@ namespace Balta.Domain.Test.SharedContext.Extensions;
 
 public class StringExtensionsTests
 {
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldGenerateBase64FromString))]
+    [Trait(nameof(StringExtensionsTests), "")]
     public void ShouldGenerateBase64FromString()
     {
         // Arrange

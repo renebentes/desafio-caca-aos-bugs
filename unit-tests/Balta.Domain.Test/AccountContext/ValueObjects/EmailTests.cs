@@ -17,7 +17,8 @@ public class EmailTests
     }
 
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldLowerCaseEmail))]
+    [Trait(nameof(EmailTests), "")]
     public void ShouldLowerCaseEmail()
     {
         // Arrange
@@ -32,7 +33,8 @@ public class EmailTests
         Assert.Equal(email.Address.ToBase64(), email.Hash);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldTrimEmail))]
+    [Trait(nameof(EmailTests), "")]
     public void ShouldTrimEmail()
     {
         // Arrange
@@ -46,7 +48,8 @@ public class EmailTests
         Assert.Equal("test@example.com", email.Address);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfEmailIsNull))]
+    [Trait(nameof(EmailTests), "")]
     public void ShouldFailIfEmailIsNull()
     {
         // Arrange
@@ -59,7 +62,8 @@ public class EmailTests
         Assert.NotNull(exception);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfEmailIsEmpty))]
+    [Trait(nameof(EmailTests), "")]
     public void ShouldFailIfEmailIsEmpty()
     {
         var emailAddress = string.Empty;
@@ -70,7 +74,8 @@ public class EmailTests
         Assert.NotNull(exception);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfEmailIsInvalid))]
+    [Trait(nameof(EmailTests), "")]
     public void ShouldFailIfEmailIsInvalid()
     {
         var emailAddress = "38e7345teste.com";
@@ -81,7 +86,8 @@ public class EmailTests
         Assert.NotNull(exception);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldPassIfEmailIsValid))]
+    [Trait(nameof(EmailTests), "")]
     public void ShouldPassIfEmailIsValid()
     { 
         // Arrange
@@ -100,7 +106,8 @@ public class EmailTests
     }
 
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldHashEmailAddress))]
+    [Trait(nameof(EmailTests), "")]
     public void ShouldHashEmailAddress()
     {
         var emailAddress = "teste123@gmail.com";
@@ -112,7 +119,8 @@ public class EmailTests
         Assert.Equal(expectedHash, email.Hash);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldExplicitConvertFromString))]
+    [Trait(nameof(EmailTests), "")]
     public void ShouldExplicitConvertFromString()
     {
         var emailAddress = "teste123@gmail.com";
@@ -124,7 +132,8 @@ public class EmailTests
         Assert.Equal(emailAddress, convertString);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldExplicitConvertToString))]
+    [Trait(nameof(EmailTests), "")]
     public void ShouldExplicitConvertToString()
     {
         var emailAddress = "teste123@gmail.com";
@@ -134,7 +143,8 @@ public class EmailTests
         Assert.Equal(emailAddress.ToLower(), emailFromString.Address);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldReturnEmailWhenCallToStringMethod))]
+    [Trait(nameof(EmailTests), "")]
     public void ShouldReturnEmailWhenCallToStringMethod()
     {
         // Arrange

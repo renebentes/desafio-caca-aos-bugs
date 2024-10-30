@@ -15,7 +15,8 @@ public class VerificationCodeTest
         _mockDateTimeProvider.Setup(m => m.UtcNow).Returns(DateTime.UtcNow);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldGenerateVerificationCode))]
+    [Trait(nameof(VerificationCodeTest), "")]
     public void ShouldGenerateVerificationCode()
     {
         var verificationCode = VerificationCode.ShouldCreate(_mockDateTimeProvider.Object);
@@ -31,7 +32,8 @@ public class VerificationCodeTest
     }
 
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldGenerateExpiresAtInFuture))]
+    [Trait(nameof(VerificationCodeTest), "")]
     public void ShouldGenerateExpiresAtInFuture()
     {
         var verificationCode = VerificationCode.ShouldCreate(_mockDateTimeProvider.Object);
@@ -39,7 +41,8 @@ public class VerificationCodeTest
         Assert.True(verificationCode.ExpiresAtUtc > DateTime.UtcNow);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldGenerateVerifiedAtAsNull))]
+    [Trait(nameof(VerificationCodeTest), "")]
     public void ShouldGenerateVerifiedAtAsNull()
     {
         // Arrange
@@ -49,7 +52,8 @@ public class VerificationCodeTest
         Assert.NotNull(verificationCode);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldBeInactiveWhenCreated))]
+    [Trait(nameof(VerificationCodeTest), "")]
     public void ShouldBeInactiveWhenCreated()
     {
         // Arrange
@@ -60,7 +64,8 @@ public class VerificationCodeTest
     }
 
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfExpired))]
+    [Trait(nameof(VerificationCodeTest), "")]
     public void ShouldFailIfExpired()
     {
         // Arrange
@@ -74,7 +79,8 @@ public class VerificationCodeTest
         Assert.Throws<InvalidVerificationCodeException>(act);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfCodeIsInvalid))]
+    [Trait(nameof(VerificationCodeTest), "")]
     public void ShouldFailIfCodeIsInvalid()
     {
         // Arrange
@@ -88,7 +94,8 @@ public class VerificationCodeTest
     }
 
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfCodeIsLessThanSixChars))]
+    [Trait(nameof(VerificationCodeTest), "")]
     public void ShouldFailIfCodeIsLessThanSixChars()
     {
         // Arrange
@@ -101,7 +108,8 @@ public class VerificationCodeTest
         Assert.Throws<InvalidVerificationCodeException>(act);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfCodeIsGreaterThanSixChars))]
+    [Trait(nameof(VerificationCodeTest), "")]
     public void ShouldFailIfCodeIsGreaterThanSixChars()
     {
         // Arrange
@@ -114,7 +122,8 @@ public class VerificationCodeTest
         Assert.Throws<InvalidVerificationCodeException>(act);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfIsNotActive))]
+    [Trait(nameof(VerificationCodeTest), "")]
     public void ShouldFailIfIsNotActive()
     {
         // Arrange
@@ -128,7 +137,8 @@ public class VerificationCodeTest
         Assert.Throws<InvalidVerificationCodeException>(act);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfIsAlreadyVerified))]
+    [Trait(nameof(VerificationCodeTest), "")]
     public void ShouldFailIfIsAlreadyVerified()
     {
         // Arrange
@@ -142,7 +152,8 @@ public class VerificationCodeTest
         Assert.Throws<InvalidVerificationCodeException>(act);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldFailIfIsVerificationCodeDoesNotMatch))]
+    [Trait(nameof(VerificationCodeTest), "")]
     public void ShouldFailIfIsVerificationCodeDoesNotMatch()
     {
         // Arrange
@@ -155,7 +166,8 @@ public class VerificationCodeTest
         Assert.Throws<InvalidVerificationCodeException>(act);
     }
 
-    [Fact]
+    [Fact(DisplayName = nameof(ShouldVerify))]
+    [Trait(nameof(VerificationCodeTest), "")]
     public void ShouldVerify()
     {
         // Arrange

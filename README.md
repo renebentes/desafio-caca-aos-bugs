@@ -12,14 +12,13 @@ Depuração e solução de bugs, pensamento crítico e analítico, segurança e 
 
 ### 🚀 Líder Técnico
 
-[NOME e GITHUB]
+Rodolfo de Jesus Silva - [lrodolfol](https://github.com/lrodolfol)
 
 ### 👻 Caçadores de Bugs
 
+- [NOME e GITHUB]
 - Rene Bentes Pinto - [renebentes](https://github.com/renebentes)
-- [NOME e GITHUB]
-- [NOME e GITHUB]
-- [NOME e GITHUB]
+- Rodolfo de Jesus Silva - [lrodolfol](https://github.com/lrodolfol)
 
 ## ⚙️ Tecnologias
 

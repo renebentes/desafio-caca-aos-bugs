@@ -1,4 +1,4 @@
-﻿using Dima.Core.Handlers;
+using Dima.Core.Handlers;
 using Dima.Core.Models;
 using Dima.Core.Requests.Orders;
 using Dima.Core.Requests.Stripe;
@@ -13,21 +13,25 @@ public partial class OrderActionComponent : ComponentBase
 {
     #region Parameters
 
-    [CascadingParameter] public DetailsPage Parent { get; set; } = null!;
-
     [Parameter, EditorRequired] public Order Order { get; set; } = null!;
 
-    #endregion
+    [CascadingParameter] public DetailsPage Parent { get; set; } = null!;
+
+    #endregion Parameters
 
     #region Services
 
     [Inject] public IJSRuntime JsRuntime { get; set; } = null!;
-    [Inject] private IDialogService DialogService { get; set; } = null!;
-    [Inject] private IOrderHandler OrderHandler { get; set; } = null!;
+
     [Inject] public IStripeHandler StripeHandler { get; set; } = null!;
+
+    [Inject] private IDialogService DialogService { get; set; } = null!;
+
+    [Inject] private IOrderHandler OrderHandler { get; set; } = null!;
+
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
 
-    #endregion
+    #endregion Services
 
     #region Public Methods
 
@@ -38,7 +42,7 @@ public partial class OrderActionComponent : ComponentBase
             "Deseja realmente cancelar este pedido?",
             yesText: "SIM", cancelText: "NÃO");
 
-        if (result is not null && result == true)
+        if (result is true)
             await CancelOrderAsync();
     }
 
@@ -54,11 +58,11 @@ public partial class OrderActionComponent : ComponentBase
             "Deseja realmente solicitar o estorno deste pedido?",
             yesText: "SIM", cancelText: "NÃO");
 
-        if (result is not null && result == true)
+        if (result is true)
             await RefundOrderAsync();
     }
 
-    #endregion
+    #endregion Public Methods
 
     #region Private Methods
 
@@ -70,20 +74,6 @@ public partial class OrderActionComponent : ComponentBase
         };
 
         var result = await OrderHandler.CancelAsync(request);
-        if (result.IsSuccess)
-            Parent.RefreshState(result.Data!);
-        else
-            Snackbar.Add(result.Message, Severity.Error);
-    }
-
-    private async Task RefundOrderAsync()
-    {
-        var request = new RefundOrderRequest
-        {
-            Id = Order.Id
-        };
-
-        var result = await OrderHandler.RefundAsync(request);
         if (result.IsSuccess)
             Parent.RefreshState(result.Data!);
         else
@@ -114,5 +104,19 @@ public partial class OrderActionComponent : ComponentBase
         }
     }
 
-    #endregion
+    private async Task RefundOrderAsync()
+    {
+        var request = new RefundOrderRequest
+        {
+            Id = Order.Id
+        };
+
+        var result = await OrderHandler.RefundAsync(request);
+        if (result.IsSuccess)
+            Parent.RefreshState(result.Data!);
+        else
+            Snackbar.Add(result.Message, Severity.Error);
+    }
+
+    #endregion Private Methods
 }

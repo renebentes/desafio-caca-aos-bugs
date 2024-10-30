@@ -16,7 +16,7 @@ Depuração e solução de bugs, pensamento crítico e analítico, segurança e 
 
 ### 👻 Caçadores de Bugs
 
-- [NOME e GITHUB]
+- Rene Bentes Pinto - [renebentes](https://github.com/renebentes)
 - [NOME e GITHUB]
 - [NOME e GITHUB]
 - [NOME e GITHUB]
